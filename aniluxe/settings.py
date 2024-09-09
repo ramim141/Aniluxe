@@ -88,6 +88,8 @@ WSGI_APPLICATION = 'aniluxe.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+
+
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_TRUSTED_ORIGINS = [
     'https://*.127.0.0.1',
