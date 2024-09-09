@@ -6,7 +6,7 @@
     <!-- ============================ COMPONENT SIGN UP ================================= -->
     <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
         <h4 class="text-2xl font-bold mb-6">Register</h4>
-        <form method="POST">
+        <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
             {% include "base/alert.html" %}
 

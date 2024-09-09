@@ -69,14 +69,28 @@ def register_page(request):
 
 
 
-def activate_email(request , email_token):
+# def activate_email(request , email_token):
+#     try:
+#         user = Profile.objects.get(email_token= email_token)
+#         user.is_email_verified = True
+#         user.save()
+#         return redirect('/')
+#     except Exception as e:
+#         return HttpResponse('Invalid Email token')
+def activate_email(request, email_token):
     try:
-        user = Profile.objects.get(email_token= email_token)
+        user = Profile.objects.get(email_token=email_token)
         user.is_email_verified = True
+        user.email_token = None  # Clear the token after verification
         user.save()
+        messages.success(request, 'Your email has been verified successfully!')
+        return redirect('/')
+    except Profile.DoesNotExist:
+        messages.error(request, 'Invalid verification link or token.')
         return redirect('/')
     except Exception as e:
-        return HttpResponse('Invalid Email token')
+        messages.error(request, f'An error occurred: {e}')
+        return redirect('/')
 
 
 

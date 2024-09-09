@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'products',
     'home',
 ]
+DOMAIN = 'aniluxe.onrender.com'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'aniluxe.urls'
