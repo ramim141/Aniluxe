@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fashion Fair</title>
+    
+    <!-- Tailwind & daisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css"/>
+    <!-- Tailwind CSS CDN (if not already included in your project) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Pecifico font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <!-- Font montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Font Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Boxicons -->
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Style css -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <style>
+        /** @type {import('tailwindcss').Config} */
+        module.exports = {
+            content: ["./src/**/*.{html,js}"],
+            theme: {
+                extend: {},
+            },
+            plugins: [],
+        }
+   </style>
+   
+</head>
+
+<body>
+    <header class="section-header">
+        <section class="bg-gray-900 px-20 py-2">
+            <nav class="flex justify-between items-center">
+                <!-- Navigation Links for Larger Screens -->
+                <ul class="hidden md:flex space-x-4">
+                    <li><a href="{% url 'index'%}" class="text-white">Home</a></li>
+                    <li><a href="#" class="text-white">Delivery</a></li>
+                    <li><a href="#" class="text-white">Payment</a></li>
+                </ul>
+                
+                <!-- Additional Links for All Screens -->
+                <ul class="flex space-x-4 items-center">
+                    <li><a href="#" class="text-white">Call: +99812345678</a></li>
+                    <li><a href="#" class="text-white">About us</a></li>
+                    <li><a href="#" class="text-white">FAQ</a></li>
+                </ul>
+            </nav>
+        </section>
+        
+        <section class="header-main border-b py-4 px-20 container mx-auto">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-1/6">
+                    <a href="{% url 'index' %}"><h1  class="text-3xl font-extrabold">ANILUXE</h1></a>
+                </div>
+    
+               <div class="">
+                <ul class="decoration-none flex gap-4">
+                    <li><a href="{% url 'shop' %}" >Shop</a></li>
+                    <li>Blog</li>
+                </ul>
+               </div>
+    
+                <!-- Cart and User Info -->
+                <div class="w-1/4 flex justify-end space-x-6 items-center">
+                    <!-- Cart Icon -->
+                    <div class="relative w-12 h-12 border-2 rounded-full border-gray-300 flex items-center justify-center">
+                        <a href="#" class="w-full h-full flex items-center justify-center">
+                            <box-icon name="cart" class="w-6 h-6"></box-icon>
+                        </a>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+                    </div>
+
+                    <!-- User Info: Conditional based on authentication -->
+                    <div class="flex items-center space-x-4">
+                        {% if user.is_authenticated %}
+                            <!-- Profile Icon and Logout for logged-in users -->
+                            <div class="w-12 h-12 border-2 rounded-full border-gray-300 flex items-center justify-center">
+                                <a>
+                                    <i class='bx bxs-user-detail'></i>
+                                </a>
+                            </div>
+                            <div class="text-gray-600">
+                                <span>Welcome, {{ user.username }}!</span>
+                                <div>
+                                    <a href="{% url 'logout' %}" class="text-blue-500">Logout</a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Login and Register for unauthenticated users -->
+                            <div class="text-gray-600">
+                                <span>Welcome!</span>
+                                <div>
+                                    <a href="{% url 'login' %}" class="text-blue-500">Log in</a> |
+                                    <a href="{% url 'register' %}" class="text-blue-500">Register</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+    
+    {% block start %}
+
+    {% endblock %}
+</body>
+</html>

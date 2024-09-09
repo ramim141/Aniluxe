@@ -1,0 +1,129 @@
+{% extends "base/base.html" %}
+
+{% block start %}
+
+<section class="container px-20 mx-auto py-10 bg-green-100">
+    <!-- ============================ COMPONENT 1 ================================= -->
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="flex justify-content-center">
+            <aside class="w-full md:w-1/2">
+                <article class="p-5">
+                    <div class="mb-4">
+                        <a href="#"><img class="w-1/2 h-auto" src="/media/{{product.product_images.first.image}}" alt="Product Image"></a>
+                    </div>
+                    <div class="flex space-x-2">
+                        {% for image in product.product_images.all %}
+                        <a href="#" class="w-16 h-16 overflow-hidden border rounded">
+                            <img src="/media/{{image.image}}" class="w-full h-full object-cover" alt="Thumbnail">
+                        </a>
+                        {% endfor %}
+                    </div>
+                </article>
+            </aside>
+
+            <main class="w-full md:w-1/2 border-l border-gray-200 p-5">
+                <article class="space-y-4">
+                    <h2 class="text-2xl font-semibold">{{product.product_name}}</h2>
+
+                    <div class="flex items-center space-x-2 my-3">
+                        <ul class="flex text-yellow-400">
+                            {% if average_rating %}
+                            {% for i in "12345" %}
+                                <li class="flex">
+                                    <i class="fa fa-star {% if i <= average_rating|floatformat:0 %}text-yellow-500{% else %}text-gray-300{% endif %}"></i>
+                                </li>
+                            {% endfor %}
+                            {% else %}
+                            <li>No reviews yet.</li>
+                            {% endif %}
+                        </ul>
+                        <small class="text-gray-500">{{ reviews.count }} reviews</small>
+                        <small class="text-green-500"><i class="fa fa-clipboard-check"></i> 154 orders</small>
+                    </div>
+
+                    <div class="text-2xl font-bold">${{product.price}}.00</div>
+
+                    <p>{{product.product_desription}}</p>
+
+                    <hr class="my-4">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1">Quantity</label>
+                            <div class="flex items-center border border-gray-300 rounded">
+                                <button class="px-3 py-2 bg-gray-100" type="button" id="button-plus">+</button>
+                                <input type="text" class="w-12 text-center border-none focus:ring-0" value="1">
+                                <button class="px-3 py-2 bg-gray-100" type="button" id="button-minus">-</button>
+                            </div>
+                        </div>
+
+                        {% if product.size_variant.count %}
+                        <div>
+                            <label class="block mb-1">Select size</label>
+                            <div class="flex space-x-2">
+                                {% for size in product.size_variant.all %}
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="select_size" class="form-radio" checked="">
+                                    <span>{{size.size_name}}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if product.color_variant.count %}
+                        <div>
+                            <label class="block mb-1">Select color</label>
+                            <div class="flex space-x-2">
+                                {% for color in product.color_variant.all %}
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="select_color" class="form-radio" checked="">
+                                    <span>{{color.color_name}}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Buy now</a>
+                        <a href="#" class="px-6 py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-100">
+                            <span class="text">Add to cart</span>
+                            <i class="fas fa-shopping-cart ml-2"></i>
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</section>
+
+<div class="reviews-section mt-10">
+    <h2>Reviews</h2>
+    {% if reviews %}
+        {% for review in reviews %}
+        <div class="review">
+            <p><strong>{{ review.user.first_name }} {{ review.user.last_name }}</strong> - Rating: {{ review.rating }}</p>
+            <p>{{ review.body }}</p>
+            <p>Reviewed on: {{ review.created_on }}</p>
+        </div>
+        {% empty %}
+        <p>No reviews yet.</p>
+        {% endfor %}
+    {% else %}
+    <p>No reviews yet.</p>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+    <div class="add-review mt-10">
+        <h1>Add Review for {{ product.product_name }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit Review</button>
+        </form>
+    </div>
+{% endif %}
+
+{% endblock %}
