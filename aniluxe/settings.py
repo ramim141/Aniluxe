@@ -85,7 +85,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'aniluxe.wsgi.application'
 
+CORS_ALLOW_ALL_ORIGINS = True
 
+
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.127.0.0.1',
+    'http://127.0.0.1:8000',
+    # 'https://fashion-fair-frontend.vercel.app/',
+    'https://aniluxe.onrender.com',
+]
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
