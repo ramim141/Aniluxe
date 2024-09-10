@@ -2,28 +2,30 @@
 
 {% block start %}
 
-<section class="container px-20 mx-auto py-10 bg-green-100">
+<section class="container px-20 mx-auto py-10 bg-green-100 mb-12">
     <!-- ============================ COMPONENT 1 ================================= -->
-    <div class="bg-white rounded-lg shadow-md">
+    <div class="bg-white rounded-lg shadow-md pb-12 pt-12">
         <div class="flex justify-content-center">
-            <aside class="w-full md:w-1/2">
+            <aside class="w-full md:w-1/2 ml-16">
                 <article class="p-5">
-                    <div class="mb-4">
-                        <a href="#"><img class="w-1/2 h-auto" src="/media/{{product.product_images.first.image}}" alt="Product Image"></a>
+                    <div class="mb-4 border-2">
+                        <a href="#">
+                            <img id="main-image" class="w-full" src="/media/{{ product.product_images.first.image }}" alt="Product Image">
+                        </a>
                     </div>
                     <div class="flex space-x-2">
                         {% for image in product.product_images.all %}
-                        <a href="#" class="w-16 h-16 overflow-hidden border rounded">
-                            <img src="/media/{{image.image}}" class="w-full h-full object-cover" alt="Thumbnail">
+                        <a href="#" class="thumbnail w-24 overflow-hidden border rounded" data-image="/media/{{ image.image }}">
+                            <img src="/media/{{ image.image }}" class="w-full h-full object-cover" alt="Thumbnail">
                         </a>
                         {% endfor %}
                     </div>
                 </article>
             </aside>
 
-            <main class="w-full md:w-1/2 border-l border-gray-200 p-5">
-                <article class="space-y-4">
-                    <h2 class="text-2xl font-semibold">{{product.product_name}}</h2>
+            <main class="w-full md:w-1/2 border-l border-gray-200 p-5 ml-4">
+                <article class="space-y-4 ml-4">
+                    <h2 class="text-3xl font-extrabold">{{ product.product_name }}</h2>
 
                     <div class="flex items-center space-x-2 my-3">
                         <ul class="flex text-yellow-400">
@@ -38,52 +40,51 @@
                             {% endif %}
                         </ul>
                         <small class="text-gray-500">{{ reviews.count }} reviews</small>
-                        <small class="text-green-500"><i class="fa fa-clipboard-check"></i> 154 orders</small>
                     </div>
 
-                    <div class="text-2xl font-bold">${{product.price}}.00</div>
+                    <div class="text-2xl text-red-500 font-extrabold">${{ product.price }}.00</div>
 
-                    <p>{{product.product_desription}}</p>
+                    <p>{{ product.product_description }}</p>
 
                     <hr class="my-4">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block mb-1">Quantity</label>
+                    <div class="">
+                        <div class="w-28">
+                            <label class="block mb-1 text-xl font-bold">Quantity</label>
                             <div class="flex items-center border border-gray-300 rounded">
                                 <button class="px-3 py-2 bg-gray-100" type="button" id="button-plus">+</button>
                                 <input type="text" class="w-12 text-center border-none focus:ring-0" value="1">
                                 <button class="px-3 py-2 bg-gray-100" type="button" id="button-minus">-</button>
                             </div>
                         </div>
-
-                        {% if product.size_variant.count %}
-                        <div>
-                            <label class="block mb-1">Select size</label>
-                            <div class="flex space-x-2">
-                                {% for size in product.size_variant.all %}
-                                <label class="flex items-center space-x-2">
-                                    <input type="radio" name="select_size" class="form-radio" checked="">
-                                    <span>{{size.size_name}}</span>
-                                </label>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% if product.color_variant.count %}
-                        <div>
-                            <label class="block mb-1">Select color</label>
-                            <div class="flex space-x-2">
-                                {% for color in product.color_variant.all %}
-                                <label class="flex items-center space-x-2">
-                                    <input type="radio" name="select_color" class="form-radio" checked="">
-                                    <span>{{color.color_name}}</span>
-                                </label>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
                     </div>
+
+                    {% if product.size_variant.count %}
+                    <div>
+                        <label class="block mb-1 text-xl font-bold">Select size</label>
+                        <div class="flex space-x-2">
+                            {% for size in product.size_variant.all %}
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="select_size" class="form-radio" checked="">
+                                <span>{{ size.size_name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if product.color_variant.count %}
+                    <div>
+                        <label class="block mb-1 text-xl font-bold">Select color</label>
+                        <div class="flex space-x-2">
+                            {% for color in product.color_variant.all %}
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="select_color" class="form-radio" checked="">
+                                <span>{{ color.color_name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <div class="flex space-x-4 mt-4">
                         <a href="#" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Buy now</a>
@@ -96,24 +97,26 @@
             </main>
         </div>
     </div>
+
+    <div class="reviews-section mt-10">
+        <h2>Reviews</h2>
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review">
+                <p><strong>{{ review.user.first_name }} {{ review.user.last_name }}</strong> - Rating: {{ review.rating }}</p>
+                <p>{{ review.body }}</p>
+                <p>Reviewed on: {{ review.created_on }}</p>
+            </div>
+            {% empty %}
+            <p>No reviews yet.</p>
+            {% endfor %}
+        {% else %}
+        <p>No reviews yet.</p>
+        {% endif %}
+    </div>
 </section>
 
-<div class="reviews-section mt-10">
-    <h2>Reviews</h2>
-    {% if reviews %}
-        {% for review in reviews %}
-        <div class="review">
-            <p><strong>{{ review.user.first_name }} {{ review.user.last_name }}</strong> - Rating: {{ review.rating }}</p>
-            <p>{{ review.body }}</p>
-            <p>Reviewed on: {{ review.created_on }}</p>
-        </div>
-        {% empty %}
-        <p>No reviews yet.</p>
-        {% endfor %}
-    {% else %}
-    <p>No reviews yet.</p>
-    {% endif %}
-</div>
+
 
 {% if user.is_authenticated %}
     <div class="add-review mt-10">
@@ -125,5 +128,7 @@
         </form>
     </div>
 {% endif %}
+
+
 
 {% endblock %}

@@ -40,17 +40,23 @@ class SizeVariant(BaseModel):
 class Product(BaseModel):
     product_name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True  , null=True , blank=True)
+    
     category = models.ForeignKey(Category , on_delete=models.CASCADE , related_name="products")
     price = models.IntegerField()
     product_desription = models.TextField()
     color_variant = models.ManyToManyField(ColorVariant , blank=True)
     size_variant = models.ManyToManyField(SizeVariant , blank=True)
+    popularity = models.PositiveIntegerField(default=0) 
     
     def average_rating(self):
         reviews = self.reviews.all()
-        if reviews.exists():
-            return reviews.aggregate(average=models.Avg('rating'))['average']
-        return None
+        # if reviews.exists():
+        #     return reviews.aggregate(average=models.Avg('rating'))['average']
+        # return None
+        total_rating = sum([review.rating for review in reviews])
+        if reviews.count() > 0:
+            return total_rating / reviews.count()
+        return 0
 
 
     

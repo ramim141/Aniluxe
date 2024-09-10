@@ -6,6 +6,7 @@ from products.models import Product, Review
 
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
+from django.db.models import Avg
 
 # def get_product(request , slug):
 #     try:
@@ -29,6 +30,21 @@ def get_product(request, slug):
     return render(request, 'product/product.html', context)
 
 
+# @login_required
+# def add_review(request, product_slug):
+#     product = get_object_or_404(Product, slug=product_slug)
+#     if request.method == 'POST':
+#         form = ReviewForm(request.POST)
+#         if form.is_valid():
+#             review = form.save(commit=False)
+#             review.product = product
+#             review.user = request.user
+#             review.save()
+#             return redirect('get_product', slug=product_slug)
+#     else:
+#         form = ReviewForm()
+    
+#     return render(request, 'product/add_review.html', {'form': form, 'product': product})
 @login_required
 def add_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -43,4 +59,8 @@ def add_review(request, product_slug):
     else:
         form = ReviewForm()
     
-    return render(request, 'product/add_review.html', {'form': form, 'product': product})
+    return render(request, 'product/product.html', {'form': form, 'product': product})
+
+
+
+
