@@ -98,11 +98,11 @@
     </div>
 
     <div class="reviews-section mt-10">
-        <h2 class="text-2xl font-bold mb-4">Customers Reviews</h2>
+        <h2 class="text-2xl font-bold mb-4">Customers Reviews: {{reviews | length}}</h2>
         
         {% if reviews %}
             {% for review in reviews %}
-            <div class="container flex flex-col w-full max-w-lg p-6 mx-auto divide-y rounded-md divide-gray-700 bg-gray-900 text-gray-100 mb-4">
+            <div class="container flex flex-col w-full p-6 mx-auto divide-y rounded-md   text-gray-800 mb-4 border border-gray-300">
                 <div class="flex justify-between p-4">
                     <div class="flex space-x-4">
                         <div>
@@ -110,18 +110,18 @@
                         </div>
                         <div>
                             <h4 class="font-bold">{{ review.user.first_name }} {{ review.user.last_name }}</h4>
-                            <span class="text-xs text-gray-400">{{ review.created_on }}</span>
+                            <span class="text-xs text-gray-500">{{ review.created_on }}</span>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 text-yellow-500">
                         {% for i in "12345" %}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current {% if i <= review.rating %}text-yellow-500{% else %}text-gray-300{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current {% if i <= review.rating %}text-yellow-500{% else %}text-yellow-600{% endif %}">
                                 <path d="M494,198.671a40.536,40.536,0,0,0-32.174-27.592L345.917,152.242,292.185,47.828a40.7,40.7,0,0,0-72.37,0L166.083,152.242,50.176,171.079a40.7,40.7,0,0,0-22.364,68.827l82.7,83.368-17.9,116.055a40.672,40.672,0,0,0,58.548,42.538L256,428.977l104.843,52.89a40.69,40.69,0,0,0,58.548-42.538l-17.9-116.055,82.7-83.368A40.538,40.538,0,0,0,494,198.671Zm-32.53,18.7L367.4,312.2l20.364,132.01a8.671,8.671,0,0,1-12.509,9.088L256,393.136,136.744,453.3a8.671,8.671,0,0,1-12.509-9.088L144.6,312.2,50.531,217.37a8.7,8.7,0,0,1,4.836-14.805l132.44-19.277L256,57.935,324.657,183.288l132.44,19.277a8.7,8.7,0,0,1,4.836,14.805Z"/>
                             </svg>
                         {% endfor %}
                     </div>
                 </div>
-                <p class="py-2">{{ review.text }}</p>
+                <p class="py-2">{{ review.body }}</p>
             </div>
             {% endfor %}
         {% else %}
@@ -131,33 +131,39 @@
 
     
     
-    {% if user.is_authenticated %}
-    <div class="review-form mt-10">
-        <h2 class="text-2xl font-bold mb-4">Write a Review</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Your Rating</label>
-                <div class="flex space-x-2">
-                    {% for i in "12345" %}
+    <div>
+        {% if user.is_authenticated %}
+        <div class="review-form mt-10">
+            <h2 class="text-2xl font-bold mb-4">Write a Review</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Your Rating</label>
+                    <div class="flex space-x-2">
+                        {% for i in "12345" %}
                         <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="hidden peer">
-                        <label for="star{{ i }}" class="cursor-pointer text-gray-300 peer-checked:text-yellow-500">
+                        <label for="star{{ i }}" class="cursor-pointer text-gray-700 peer-checked:text-yellow-500 text-3xl" onclick="document.getElementById('star{{ i }}').checked = true;">
                             &#9733;
                         </label>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Your Review</label>
-                <textarea name="body" rows="4" class="w-full p-2 border rounded" placeholder="Write your review here..."></textarea>
-            </div>
-            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit Review</button>
-        </form>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Your Review</label>
+                    <textarea name="body" rows="4" class="w-full p-2 border rounded" placeholder="Write your review here..."></textarea>
+                </div>
+                <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit Review</button>
+            </form>
+        </div>
+        {% else %}
+        <p class="mt-10 text-lg">You need to be logged in to write a review. <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login here</a></p>
+        {% endif %}
     </div>
-    {% else %}
-    <p class="mt-10 text-lg">You need to be logged in to write a review. <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login here</a></p>
-    {% endif %}
+    
 </section>
+
+
+
 
 
 {% endblock %}

@@ -3,7 +3,13 @@ from base.models import BaseModel
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
-
+STAR_CHOICES = [
+    ('⭐', '⭐'),
+    ('⭐⭐', '⭐⭐'),
+    ('⭐⭐⭐', '⭐⭐⭐'),
+    ('⭐⭐⭐⭐', '⭐⭐⭐⭐'),
+    ('⭐⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'),
+]
 
 class Category(BaseModel):
     category_name = models.CharField(max_length=100)
@@ -48,15 +54,22 @@ class Product(BaseModel):
     size_variant = models.ManyToManyField(SizeVariant , blank=True)
     popularity = models.PositiveIntegerField(default=0) 
     
+    # def average_rating(self):
+    #     reviews = self.reviews.all()
+    #     # if reviews.exists():
+    #     #     return reviews.aggregate(average=models.Avg('rating'))['average']
+    #     # return None
+    #     total_rating = sum([review.rating for review in reviews])
+    #     if reviews.count() > 0:
+    #         return total_rating / reviews.count()
+        #     return 0
     def average_rating(self):
         reviews = self.reviews.all()
-        # if reviews.exists():
-        #     return reviews.aggregate(average=models.Avg('rating'))['average']
-        # return None
-        total_rating = sum([review.rating for review in reviews])
-        if reviews.count() > 0:
-            return total_rating / reviews.count()
+        if reviews.exists():
+            return reviews.aggregate(average=models.Avg('rating'))['average']
         return 0
+
+
 
 
     
@@ -77,7 +90,7 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False)
-    rating = models.PositiveIntegerField()  # Rating should be between 1 and 5
+    rating = models.CharField(choices = STAR_CHOICES, max_length=10)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
