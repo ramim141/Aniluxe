@@ -73,25 +73,48 @@ def get_product(request, slug):
 #     }
 
 #     return render(request, 'product/product.html', context)
+# @login_required
+# def add_review(request, id):
+#     if request.user.is_authenticated:
+#         product = Product.objects.get(id=id)
+#         if request.method == "POST":
+#             form = ReviewForm(request.POST or None)
+#             if form.is_valid():
+#                 data = form.save(commit=False)
+#                 data.body = request.POST["body"]
+#                 data.rating = request.POST["rating"]
+#                 data.user = request.user
+#                 data.product = product
+#                 data.save()
+#                 return redirect("product/product.html", id)
+#         else:
+#             form = ReviewForm()
+#         return render(request, "product/product.html", {'form': form})
+#     else:
+#         return redirect("login")
 @login_required
-def add_review(request, id):
-    if request.user.is_authenticated:
-        product = Product.objects.get(id=id)
-        if request.method == "POST":
-            form = ReviewForm(request.POST or None)
-            if form.is_valid():
-                data = form.save(commit=False)
-                data.body = request.POST["body"]
-                data.rating = request.POST["rating"]
-                data.user = request.user
-                data.product = product
-                data.save()
-                return redirect("product/product.html", id)
+def add_review(request, uid):
+    product = get_object_or_404(Product, uid=uid)
+    
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            messages.success(request, "Your review has been submitted successfully!")
+            return redirect('get_product', slug=product.slug)
         else:
-            form = ReviewForm()
-        return render(request, "product/product.html", {'form': form})
+            messages.error(request, "Please correct the errors below.")
     else:
-        return redirect("login")
+        form = ReviewForm()
+
+    context = {
+        'product': product,
+        'form': form,
+    }
+    return render(request, 'product/product.html', context)
 
 
 def add_to_cart(request, uid):

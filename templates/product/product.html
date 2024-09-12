@@ -1,32 +1,35 @@
 {% extends "base/base.html" %}
 
-
+{% load static %}
 {% block start %}
 
-<section class="container px-20 mx-auto py-10 bg-green-100 mb-12">
-    <div class="bg-white rounded-lg shadow-md pb-12 pt-12">
+<section class="container px-20 mx-auto py-10 mb-12">
+    <div class="bg-white rounded-lg shadow-md pb-12 pt-12 border">
         <div class="flex flex-col md:flex-row">
-            <aside class="w-full md:w-1/2 ml-16">
-                <article class="p-5">
-                    <div class="mb-4 border-2">
+            <div class="ml-16">
+                <div class="p-5">
+                    <div class="mb-4 mx-auto w-[300px]"> <!-- Set a fixed width for the container -->
                         <a href="#">
-                            <img id="main-image" class="w-full" src="/media/{{ product.product_images.first.image }}" alt="Product Image">
+                            <img id="main-image" class="w-3/4 h-[300px] object-cover" src="/media/{{ product.product_images.first.image }}" alt="Product Image">
+
                         </a>
                     </div>
-                    <div class="flex space-x-2">
-                        {% for image in product.product_images.all %}
-                        <a href="#" class="thumbnail w-24 overflow-hidden border rounded" data-image="/media/{{ image.image }}">
-                            <img src="/media/{{ image.image }}" class="w-full h-full object-cover" alt="Thumbnail">
-                        </a>
-                        {% endfor %}
-                    </div>
-                </article>
-            </aside>
+                </div>
+                <div class="flex space-x-2">
+                    {% for image in product.product_images.all %}
+                    <a href="#" class="thumbnail w-24 overflow-hidden border rounded" data-image="/media/{{ image.image }}">
+                        <img src="/media/{{ image.image }}" class="w-full h-full object-cover" alt="Thumbnail">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            
 
             <main class="w-full md:w-1/2 border-l border-gray-200 p-5 ml-4">
                 <article class="space-y-4">
                     <h2 class="text-3xl font-extrabold">{{ product.product_name }}</h2>
-
+                   
                     <div class="flex items-center space-x-2 my-3">
                         <ul class="flex text-yellow-400">
                             {% if average_rating %}
@@ -39,24 +42,17 @@
                             <li>No reviews yet.</li>
                             {% endif %}
                         </ul>
-                        <small class="text-gray-500">{{ reviews.count }} reviews</small>
+                        <small class="text-gray-500 text-lg">{{ reviews.count }} reviews</small>
                     </div>
 
-                    <div class="text-2xl text-red-500 font-extrabold">${{ product.price }}.00</div>
+                    <div class="text-4xl text-red-500 font-extrabold font-montserrat">Tk. {{ product.price }}.00</div>
 
                     <p>{{ product.product_description }}</p>
 
                     <hr class="my-4">
 
                     <div>
-                        <div class="w-28">
-                            <label class="block mb-1 text-xl font-bold">Quantity</label>
-                            <div class="flex items-center border border-gray-300 rounded">
-                                <button class="px-3 py-2 bg-gray-100" type="button" id="button-plus">+</button>
-                                <input type="text" class="w-12 text-center border-none focus:ring-0" value="1">
-                                <button class="px-3 py-2 bg-gray-100" type="button" id="button-minus">-</button>
-                            </div>
-                        </div>
+                       
                     </div>
 
                     {% if product.size_variant.count %}
@@ -85,8 +81,11 @@
                         </div>
                     </div>
                     {% endif %}
-
-                    <div class="flex space-x-4 mt-4">
+                    <div class="mb-4 pb-8">
+                        <h1 class="text-xl font-bold mb-4">Description</h1>
+                        <p>{{ product.product_desription }}</p>
+                    </div>
+                    <div class="flex space-x-4 mt-20">
                         <a href="{% url 'add_to_wishlist' product.uid %}" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add to Wishlist</a>
                         <a href="{% url 'add_to_cart' product.uid %}?variant ={{select_size}} " class="px-6 py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-100">
                             <span class="text">Add to cart</span>
@@ -99,7 +98,7 @@
     </div>
 
     <div class="reviews-section mt-10">
-        <h2 class="text-2xl font-bold mb-4">Customers Reviews: {{reviews | length}}</h2>
+        <h2 class="text-2xl font-bold mb-4 font-montserrat">Customers Reviews: {{reviews | length}}</h2>
         
         {% if reviews %}
             {% for review in reviews %}
@@ -107,7 +106,7 @@
                 <div class="flex justify-between p-4">
                     <div class="flex space-x-4">
                         <div>
-                            <img src="https://source.unsplash.com/100x100/?portrait" alt="User Photo" class="object-cover w-12 h-12 rounded-full bg-gray-500">
+                            <img src="{% static 'profile.png' %}" alt="User Photo" class="object-cover w-12 h-12 rounded-full bg-gray-500">
                         </div>
                         <div>
                             <h4 class="font-bold">{{ review.user.first_name }} {{ review.user.last_name }}</h4>
@@ -131,30 +130,58 @@
     </div>
 
     
-    
-    <div>
-        
-        <div class="review-form mt-10">
-            <h2 class="text-2xl font-bold mb-4">Write a Review</h2>
-            <form method="POST">
-                {% csrf_token %}
-                <label for="comment">Review</label>
-                <textarea name="comment" id="comment" cols="30" rows="5" class="form-control"></textarea>
-                <label for="rating">Rating</label>
-                <input type="range" id="rangeInput" name="rating" min="0" max="10" value="0" step="0.5" oninput="amount.value=rangeInput.value">
-                <output name="amount" id="amount" for="rangeInput">0</output>
-                <br>
-                <input type="submit" class="btn btn-danger" value="Add Review">
-            </form>
-        </div>
-        
-     
+    <div class="max-w-lg mx-auto mt-10 p-6 bg-white border border-gray-300 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Write a Review</h1>
+        <form action="{% url 'add_review' product.uid %}" method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Rating Field -->
+            <div class="flex flex-col">
+                <label for="id_rating" class="text-sm font-medium text-gray-700 mb-2">Rating</label>
+              
+                {{ form.rating }}
+            </div>
+            
+            <!-- Review Field -->
+            <div class="flex flex-col">
+                <label for="id_body" class="text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                {{ form.body.errors }}
+                <textarea id="id_body" name="body" rows="4" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Write your review here...">{{ form.body.value }}</textarea>
+            </div>
+            
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Submit Review
+                </button>
+            </div>
+            
+        </form>
     </div>
+    
+    
+    
+    
+    
+    
     
 </section>
 
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainImage = document.getElementById('main-image');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+    
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', (event) => {
+                event.preventDefault();
+                const newImageSrc = thumbnail.getAttribute('data-image');
+                mainImage.src = newImageSrc;
+            });
+        });
+    });
+    </script>
 
 
 {% endblock %}

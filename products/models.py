@@ -2,14 +2,7 @@ from django.db import models
 from base.models import BaseModel
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-
-STAR_CHOICES = [
-    ('⭐', '⭐'),
-    ('⭐⭐', '⭐⭐'),
-    ('⭐⭐⭐', '⭐⭐⭐'),
-    ('⭐⭐⭐⭐', '⭐⭐⭐⭐'),
-    ('⭐⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'),
-]
+from .choices import STAR_CHOICES
 
 class Category(BaseModel):
     category_name = models.CharField(max_length=100)
@@ -86,15 +79,17 @@ class ProductImage(BaseModel):
     product = models.ForeignKey(Product , on_delete=models.CASCADE , related_name="product_images")
     image =  models.ImageField(upload_to="product")
 
+
+
+
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False)
-    rating = models.CharField(choices = STAR_CHOICES, max_length=10)
+    rating = models.CharField(choices=STAR_CHOICES, max_length=10)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Reviewed By {self.user.first_name} {self.user.last_name}"
 
-    class Meta:
-        unique_together = ('product', 'user')  # Ensure that a user can only review a product once
+  
