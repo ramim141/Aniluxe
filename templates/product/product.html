@@ -1,5 +1,6 @@
 {% extends "base/base.html" %}
 
+
 {% block start %}
 
 <section class="container px-20 mx-auto py-10 bg-green-100 mb-12">
@@ -86,8 +87,8 @@
                     {% endif %}
 
                     <div class="flex space-x-4 mt-4">
-                        <a href="#" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Buy now</a>
-                        <a href="#" class="px-6 py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-100">
+                        <a href="{% url 'add_to_wishlist' product.uid %}" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add to Wishlist</a>
+                        <a href="{% url 'add_to_cart' product.uid %}?variant ={{select_size}} " class="px-6 py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-100">
                             <span class="text">Add to cart</span>
                             <i class="fas fa-shopping-cart ml-2"></i>
                         </a>
@@ -132,32 +133,22 @@
     
     
     <div>
-        {% if user.is_authenticated %}
+        
         <div class="review-form mt-10">
             <h2 class="text-2xl font-bold mb-4">Write a Review</h2>
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Your Rating</label>
-                    <div class="flex space-x-2">
-                        {% for i in "12345" %}
-                        <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="hidden peer">
-                        <label for="star{{ i }}" class="cursor-pointer text-gray-700 peer-checked:text-yellow-500 text-3xl" onclick="document.getElementById('star{{ i }}').checked = true;">
-                            &#9733;
-                        </label>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Your Review</label>
-                    <textarea name="body" rows="4" class="w-full p-2 border rounded" placeholder="Write your review here..."></textarea>
-                </div>
-                <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit Review</button>
+                <label for="comment">Review</label>
+                <textarea name="comment" id="comment" cols="30" rows="5" class="form-control"></textarea>
+                <label for="rating">Rating</label>
+                <input type="range" id="rangeInput" name="rating" min="0" max="10" value="0" step="0.5" oninput="amount.value=rangeInput.value">
+                <output name="amount" id="amount" for="rangeInput">0</output>
+                <br>
+                <input type="submit" class="btn btn-danger" value="Add Review">
             </form>
         </div>
-        {% else %}
-        <p class="mt-10 text-lg">You need to be logged in to write a review. <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login here</a></p>
-        {% endif %}
+        
+     
     </div>
     
 </section>

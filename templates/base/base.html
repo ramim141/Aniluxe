@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fashion Fair</title>
+  
     
     <!-- Tailwind & daisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css"/>
@@ -31,7 +31,8 @@
     <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
 
     <!-- Style css -->
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="css/style.css">
+   
     <script src="{% static 'js/shop.js' %}"></script>
 
     <style>
@@ -85,10 +86,10 @@
                 <div class="w-1/4 flex justify-end space-x-6 items-center">
                     <!-- Cart Icon -->
                     <div class="relative w-12 h-12 border-2 rounded-full border-gray-300 flex items-center justify-center">
-                        <a href="#" class="w-full h-full flex items-center justify-center">
+                        <a href="{% url 'cart'%}" class="w-full h-full flex items-center justify-center">
                             <box-icon name="cart" class="w-6 h-6"></box-icon>
                         </a>
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">{{request.user.profile.get_cart_count}}</span>
                     </div>
 
                     <!-- User Info: Conditional based on authentication -->
@@ -96,8 +97,8 @@
                         {% if user.is_authenticated %}
                             <!-- Profile Icon and Logout for logged-in users -->
                             <div class="w-12 h-12 border-2 rounded-full border-gray-300 flex items-center justify-center">
-                                <a>
-                                    <i class='bx bxs-user-detail'></i>
+                                <a href="{% url 'wishlist' %}">
+                                    <box-icon name='heart' color='#ff0000' ></box-icon>
                                 </a>
                             </div>
                             <div class="text-gray-600">

@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+
+
+{% block start %}
+<section class="container px-20 mx-auto mt-12">
+
+    <div class="text-center text-3xl">
+        <box-icon name="heart" color="#ff0000" size="5rem"></box-icon>
+        <h1 class="text-3xl font-bold">My Wishlist</h1>
+    </div>
+    
+    {% if wishlist_items %}
+    <div class="mt-8">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-200 text-gray-600 text-sm uppercase">
+                    <tr>
+                        <th class="py-3 px-4 text-left">Product</th>
+                        <th class="py-3 px-4 text-center">Price</th>
+                        <th class="py-3 px-4 text-right"></th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in wishlist_items %}
+                    <tr class="border-b">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center gap-4">
+                                <a href="{% url 'remove_from_wishlist' item.product.uid %}" class="text-gray-400 hover:text-red-500 mr-2">
+                                    <i class='bx bx-trash text-2xl'></i>
+                                </a>
+                                <div class="w-16 h-16">
+                                    <img src="/media/{{ item.product.product_images.first.image }}" alt="{{ item.product.product_name }}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="ml-4">
+                                    <p class="font-semibold">{{ item.product.product_name }}</p>
+                                    <p class="text-sm text-gray-500">{{ item.product.category.name }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="flex flex-col">
+                                <span class="font-semibold">${{ item.product.price }}</span>
+                            </div>
+                        </td>
+                        <td class="">
+                            
+                            <a href="{% url 'add_to_cart' item.product.uid %}" class="text-gray-400 hover:text-blue-500 ml-12">
+                                <button class="px-3 py-2 bg-blue-500 rounded-xl text-white justify-en">Add to Cart</button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center mt-8">
+        <p class="text-lg text-gray-500">Your wishlist is currently empty.</p>
+    </div>
+    {% endif %}
+
+</section>
+{% endblock %}

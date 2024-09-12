@@ -42,3 +42,4 @@ document.querySelectorAll('.thumbnail').forEach(thumbnail => {
         document.getElementById('main-image').setAttribute('src', newImageSrc);
     });
 });
+

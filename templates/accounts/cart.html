@@ -1,0 +1,159 @@
+{% extends 'base/base.html' %}
+
+
+{% block start %}
+
+
+
+<section class="py-12 container px-20 mx-auto">
+
+    <div class="text-center text-3xl">
+        <box-icon name="cart" color="#ff0000" size="5rem"></box-icon>
+        <h1 class="uppercase text-center text-xl font-bold mb-8">Your Cart Items Here</h1>
+    </div>
+    <div class="">
+        <div class="flex gap-8">
+            <!-- Main content -->
+            <div class="md:w-3/4">
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <table class="min-w-full table-auto">
+                        <thead class="bg-gray-200 text-gray-600 text-sm uppercase">
+                            <tr>
+                                <th class="py-3 px-4 text-left">Product</th>
+                                <th class="py-3 px-4 text-center">Quantity</th>
+                                <th class="py-3 px-4 text-center">Price</th>
+                                <th class="py-3 px-4 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr class="border-b" data-item-id="{{ item.id }}">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="w-16 h-16">
+                                            <img src="/media/{{ item.product.product_images.first.image }}" alt="{{ item.product.product_name }}" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="ml-4">
+                                            <a href="#" class="text-gray-900 font-semibold">{{ item.product.product_name }}</a>
+                                            {% if item.size_variant %}
+                                                <p class="text-gray-600 text-sm">Size: {{ item.size_variant.size_name }}</p>
+                                            {% endif %}
+                                            {% if item.color_variant %}
+                                                <p class="text-gray-600 text-sm">Color: {{ item.color_variant.color_name }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <select name="quantity" id="quantity-{{ item.id }}" class="quantity-select" data-item-price="{{ item.get_product_price }}">
+                                       <option value="1" {% if item.quantity == 1 %}selected{% endif %}>1</option>
+                                       <option value="2" {% if item.quantity == 2 %}selected{% endif %}>2</option>
+                                       <option value="3" {% if item.quantity == 3 %}selected{% endif %}>3</option>
+                                       <option value="4" {% if item.quantity == 4 %}selected{% endif %}>4</option>
+                                       <option value="5" {% if item.quantity == 5 %}selected{% endif %}>5</option>
+                                    </select>
+                                </td>
+                                <td class="text-center">
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold item-price">${{ item.get_product_price }}</span>
+                                        <small class="text-gray-500">${{ item.product.price }} each</small>
+                                    </div>
+                                </td>
+                                <td class="justigy-end ml-8">
+                                    <a href="{% url 'remove_cart' item.uid %}" class="text-gray-400 hover:text-red-500 mr-2">
+                                        <i class='bx bx-trash text-2xl'></i>
+                                    </a>
+                                   
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="p-4 mt-4 mb-4">
+                        <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded float-right hover:bg-blue-600 mr-4">
+                            Make Purchase <i class="fa fa-chevron-right"></i>
+                        </a>
+                        <a href="{% url 'shop' %}" class="text-blue-700 px-4 py-2 rounded hover:bg-gray-100">
+                            <i class="fa fa-chevron-left"></i> Continue shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="md:w-1/4 mt-8 md:mt-0">
+                <div class="bg-white shadow-lg rounded-lg p-4 mb-4">
+                    <form>
+                        <label class="block mb-2 text-gray-700">Have coupon?</label>
+                        <div class="flex">
+                            <input type="text" placeholder="Coupon code" class="border border-gray-300 p-2 rounded-l w-full">
+                            <button class="bg-blue-500 text-white p-2 rounded-r hover:bg-blue-600">Apply</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg p-4">
+                    <dl class="mb-2">
+                        <div class="flex justify-between">
+                            <dt class="text-gray-700">Total price:</dt>
+                            <dd class="text-gray-900 total-price">${{ total_price }}</dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="text-gray-700">Discount:</dt>
+                            <dd class="text-gray-900">$0.00</dd>
+                        </div>
+                        <div class="flex justify-between font-semibold">
+                            <dt class="text-gray-900">Total:</dt>
+                            <dd class="text-gray-900 total-price">${{ total_price }}</dd>
+                        </div>
+                    </dl>
+                    <hr class="my-3">
+                    <p class="text-center">
+                        <button class="px-24 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Place Order</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="mt-6 p-4 bg-green-100 text-green-700 rounded">
+    <p><i class="fa fa-truck"></i> Free Delivery within 1-2 weeks</p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quantitySelects = document.querySelectorAll('.quantity-select');
+        const totalPriceElement = document.querySelectorAll('.total-price');
+    
+        quantitySelects.forEach(select => {
+            select.addEventListener('change', function () {
+                const itemPrice = parseFloat(this.getAttribute('data-item-price'));
+                const quantity = parseInt(this.value, 10);
+                const row = this.closest('tr');
+                const itemTotal = itemPrice * quantity;
+    
+                row.querySelector('.item-price').textContent = `$${itemTotal.toFixed(2)}`;
+    
+                updateTotalPrice();
+            });
+        });
+    
+        function updateTotalPrice() {
+            let total = 0;
+            quantitySelects.forEach(select => {
+                const itemPrice = parseFloat(select.getAttribute('data-item-price'));
+                const quantity = parseInt(select.value, 10);
+                total += itemPrice * quantity;
+            });
+    
+            totalPriceElement.forEach(el => {
+                el.textContent = `$${total.toFixed(2)}`;
+            });
+        }
+    });
+    
+    
+  
+</script>
+
+{% endblock %}

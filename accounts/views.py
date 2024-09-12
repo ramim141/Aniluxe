@@ -6,10 +6,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate , login , logout
 from django.http import HttpResponseRedirect,HttpResponse
 # Create your views here.
-from .models import Profile
+from .models import Profile, Cart, CartItems
 from django.contrib.auth import logout
-
-
+from .models import Wishlist
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from products.models import Product
 
 def login_page(request):
     
@@ -66,7 +68,14 @@ def register_page(request):
 
     return render(request ,'accounts/register.html')
 
-
+def remove_cart(request, uid):
+    try:
+        cart_item = CartItems.objects.get(uid = uid)
+        cart_item.delete()
+    except Exception as e:
+        print (e)
+    
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 # def activate_email(request , email_token):
@@ -97,3 +106,49 @@ def activate_email(request, email_token):
 def logout_view(request):
     logout(request)  # Logs out the user
     return redirect('login') 
+
+
+
+# def cart(request):
+#     context = {'cart': Cart.objects.filter(is_paid = False, user = request.user)}
+#     return render(request, 'accounts/cart.html', context)
+
+def cart(request):
+    cart_items = CartItems.objects.filter(cart__user=request.user, cart__is_paid=False)
+    
+    # Calculate total price
+    total_price = sum(item.get_product_price() for item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    return render(request, 'accounts/cart.html', context)
+
+
+@login_required
+def wishlist(request):
+    wishlist_items = request.user.wishlist.all()
+    return render(request, 'accounts/wishlist.html', {'wishlist_items': wishlist_items})
+
+@login_required
+def add_to_wishlist(request, uid):
+    product = get_object_or_404(Product, uid=uid)
+    user = request.user
+    wishlist_item, created = Wishlist.objects.get_or_create(user=user, product=product)
+    
+    if created:
+        messages.success(request, 'Product added to wishlist!')
+    else:
+        messages.info(request, 'Product is already in your wishlist.')
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def remove_from_wishlist(request, uid):
+    product = get_object_or_404(Product, uid=uid)
+    wishlist_item = get_object_or_404(Wishlist, user=request.user, product=product)
+    wishlist_item.delete()
+    
+    messages.success(request, 'Product removed from wishlist!')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
