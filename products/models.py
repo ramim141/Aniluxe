@@ -2,7 +2,6 @@ from django.db import models
 from base.models import BaseModel
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-from .choices import STAR_CHOICES
 
 class Category(BaseModel):
     category_name = models.CharField(max_length=100)
@@ -35,7 +34,6 @@ class SizeVariant(BaseModel):
 
 
 
-
 class Product(BaseModel):
     product_name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True  , null=True , blank=True)
@@ -46,16 +44,9 @@ class Product(BaseModel):
     color_variant = models.ManyToManyField(ColorVariant , blank=True)
     size_variant = models.ManyToManyField(SizeVariant , blank=True)
     popularity = models.PositiveIntegerField(default=0) 
-    
-    # def average_rating(self):
-    #     reviews = self.reviews.all()
-    #     # if reviews.exists():
-    #     #     return reviews.aggregate(average=models.Avg('rating'))['average']
-    #     # return None
-    #     total_rating = sum([review.rating for review in reviews])
-    #     if reviews.count() > 0:
-    #         return total_rating / reviews.count()
-        #     return 0
+    # reviews = models.ManyToManyField('Review', related_name='products', blank=True)
+   
+   
     def average_rating(self):
         reviews = self.reviews.all()
         if reviews.exists():
@@ -63,9 +54,6 @@ class Product(BaseModel):
         return 0
 
 
-
-
-    
     def save(self , *args , **kwargs):
         self.slug = slugify(self.product_name)
         super(Product ,self).save(*args , **kwargs)
@@ -83,10 +71,10 @@ class ProductImage(BaseModel):
 
 
 class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
-    body = models.TextField(blank=False)
-    rating = models.CharField(choices=STAR_CHOICES, max_length=10)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField(max_length=1000)
+    rating = models.FloatField(default=0)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

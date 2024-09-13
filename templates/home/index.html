@@ -1,6 +1,6 @@
 
 {% extends "base/base.html" %}
-
+{% block title %}Home - Aniluxe{% endblock %}
 
 {% load static %}
 {% block start %}
@@ -96,11 +96,11 @@
               <!-- Product-1 -->
               {% for product in products|slice:":8" %}
               <div class="relative flex-shrink-0 mx-auto mb-12 transition-transform duration-300 transform product-item w-80 hover:-translate-y-2 hover:shadow-lg hover:border-1">
-                  <div class="relative overflow-hidden cursor-pointer group bg-gray-400">
+                  <div class="relative overflow-hidden cursor-pointer group bg-gray-200">
                       <a href="{% url 'get_product' product.slug %}" class="block">
                           <img src="/media/{{ product.product_images.first.image }}"  alt="Product Image" class="object-cover w-full transition-transform duration-500 rounded-lg h-80 group-hover:scale-105" />
                       </a>
-                      <span class="absolute px-2 py-1 text-base text-white bg-red-800 rounded-full top-4 left-4">40% OFF</span>
+                      <span class="absolute px-2 py-1 text-base text-white bg-red-800 rounded-full top-4 left-4">10% OFF</span>
                       <a href="{% url 'get_product' product.slug %}" class="absolute inset-x-0 px-8 py-4 text-xl text-center text-white transition-all duration-300 transform translate-y-1/2 bg-yellow-500 border-2 border-transparent rounded-lg opacity-0 bottom-1/2 group-hover:opacity-100 group-hover:scale-105 hover:bg-yellow-600 hover:text-white">
                           View Details
                       </a>

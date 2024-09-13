@@ -116,7 +116,7 @@ def logout_view(request):
 def cart(request):
     cart_items = CartItems.objects.filter(cart__user=request.user, cart__is_paid=False)
     
-    # Calculate total price
+ 
     total_price = sum(item.get_product_price() for item in cart_items)
     
     context = {

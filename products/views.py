@@ -10,113 +10,46 @@ from .forms import ReviewForm
 from django.db.models import Avg
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-# def get_product(request , slug):
-#     try:
-#         product = Product.objects.get(slug =slug)
-#         return render(request  , 'product/product.html' , context = {'product' : product})
 
-#     except Exception as e:
-#         print(e)
-
-# views.py
 
 
 def get_product(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    reviews = product.reviews.all()  # Fetch reviews related to the product
-    average_rating = product.average_rating()  # Get average rating
+    product = Product.objects.get( slug=slug)
+    reviews = product.reviews.all()  
+    average_rating = product.average_rating()  
+   
 
     context = {
         'product': product,
         'reviews': reviews,
         'average_rating': average_rating,
+       
     }
     return render(request, 'product/product.html', context)
 
 
-# @login_required
-# def add_review(request, product_slug):
-#     product = get_object_or_404(Product, slug=product_slug)
-#     if request.method == 'POST':
-#         form = ReviewForm(request.POST)
-#         if form.is_valid():
-#             review = form.save(commit=False)
-#             review.product = product
-#             review.user = request.user
-#             review.save()
-#             return redirect('get_product', slug=product_slug)
-#     else:
-#         form = ReviewForm()
 
-#     return render(request, 'product/add_review.html', {'form': form, 'product': product})
-# @login_required
-# def add_review(request, product_slug):
-#     product = get_object_or_404(Product, slug=product_slug)
-
-#     if request.method == 'POST':
-#         form = ReviewForm(request.POST)
-#         if form.is_valid():
-#             review = form.save(commit=False)
-#             review.product = product
-#             review.user = request.user
-#             review.save()
-#             messages.success(request, "Your review has been submitted successfully!")
-#             return redirect('get_product', slug=product_slug)
-#         else:
-#             messages.error(request, "Please correct the errors below.")
-#     else:
-#         form = ReviewForm()
-
-#     context = {
-#         'form': form,
-#         'product': product,
-#     }
-
-#     return render(request, 'product/product.html', context)
-# @login_required
-# def add_review(request, id):
-#     if request.user.is_authenticated:
-#         product = Product.objects.get(id=id)
-#         if request.method == "POST":
-#             form = ReviewForm(request.POST or None)
-#             if form.is_valid():
-#                 data = form.save(commit=False)
-#                 data.body = request.POST["body"]
-#                 data.rating = request.POST["rating"]
-#                 data.user = request.user
-#                 data.product = product
-#                 data.save()
-#                 return redirect("product/product.html", id)
-#         else:
-#             form = ReviewForm()
-#         return render(request, "product/product.html", {'form': form})
-#     else:
-#         return redirect("login")
 @login_required
-def add_review(request, uid):
-    product = get_object_or_404(Product, uid=uid)
-    
-    if request.method == "POST":
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.product = product
-            review.user = request.user
-            review.save()
-            messages.success(request, "Your review has been submitted successfully!")
+def add_review(request, slug):  
+    product = get_object_or_404(Product, slug=slug)  
+
+    if request.method == 'POST':
+        comment_form = ReviewForm(request.POST)
+        if comment_form.is_valid():
+            new_review = comment_form.save(commit=False)
+            new_review.product = product  
+            new_review.user = request.user  
+            new_review.save()
             return redirect('get_product', slug=product.slug)
-        else:
-            messages.error(request, "Please correct the errors below.")
     else:
-        form = ReviewForm()
+        comment_form = ReviewForm()
 
-    context = {
-        'product': product,
-        'form': form,
-    }
-    return render(request, 'product/product.html', context)
+    #
+    return render(request, 'product/product.html', {'form': comment_form, 'product': product})
 
+ 
 
+@login_required
 def add_to_cart(request, uid):
     variant = request.GET.get('variant')
 

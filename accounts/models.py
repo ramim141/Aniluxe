@@ -67,7 +67,7 @@ def  send_email_token(sender , instance , created , **kwargs):
     except Exception as e:
         print(e)
 
-# accounts/models.py
+
 
 class Wishlist(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlist")
