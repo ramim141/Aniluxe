@@ -35,6 +35,24 @@ class Cart(BaseModel):
         return sum(price)
             
     
+# class CartItems(BaseModel):
+#     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+#     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True, related_name="cart_items")
+#     color_variant = models.ForeignKey(ColorVariant, on_delete=models.SET_NULL, null=True, blank=True)
+#     size_variant = models.ForeignKey(SizeVariant, on_delete=models.SET_NULL, null=True, blank=True)
+
+#     def get_product_price(self):
+#         price = [self.product.price]
+        
+#         if self.color_variant:
+#             color_variant_price = self.color_variant.price
+#             price.append(color_variant_price)
+
+#         if self.size_variant:
+#             size_variant_price = self.size_variant.price
+#             price.append(size_variant_price)
+
+#         return sum(price)
 class CartItems(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True, related_name="cart_items")
@@ -42,17 +60,18 @@ class CartItems(BaseModel):
     size_variant = models.ForeignKey(SizeVariant, on_delete=models.SET_NULL, null=True, blank=True)
 
     def get_product_price(self):
-        price = [self.product.price]
+        if self.product is None:
+            return 0
+        
+        price = self.product.price
         
         if self.color_variant:
-            color_variant_price = self.color_variant.price
-            price.append(color_variant_price)
+            price += self.color_variant.price
 
         if self.size_variant:
-            size_variant_price = self.size_variant.price
-            price.append(size_variant_price)
+            price += self.size_variant.price
 
-        return sum(price)
+        return price
 
 
 @receiver(post_save , sender = User)

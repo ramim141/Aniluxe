@@ -109,9 +109,9 @@ def logout_view(request):
 
 
 
-# def cart(request):
-#     context = {'cart': Cart.objects.filter(is_paid = False, user = request.user)}
-#     return render(request, 'accounts/cart.html', context)
+def cart(request):
+    context = {'cart': Cart.objects.filter(is_paid = False, user = request.user)}
+    return render(request, 'accounts/cart.html', context)
 
 def cart(request):
     cart_items = CartItems.objects.filter(cart__user=request.user, cart__is_paid=False)
@@ -124,6 +124,22 @@ def cart(request):
         'total_price': total_price,
     }
     return render(request, 'accounts/cart.html', context)
+# def cart(request):
+#     cart_items = CartItems.objects.filter(cart__user=request.user, cart__is_paid=False)
+
+#     total_price = 0
+#     for item in cart_items:
+#         try:
+#             total_price += item.get_product_price()
+#         except Exception as e:
+#             print(f"Error calculating price for item {item.id}: {e}")
+
+#     context = {
+#         'cart_items': cart_items,
+#         'total_price': total_price,
+#     }
+#     return render(request, 'accounts/cart.html', context)
+
 
 
 @login_required
