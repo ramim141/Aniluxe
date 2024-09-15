@@ -10,7 +10,7 @@ class Profile(BaseModel):
     user = models.OneToOneField(User , on_delete=models.CASCADE , related_name="profile")
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=300 , null=True , blank=True)
-    profile_image = models.ImageField(upload_to = 'profile')
+    # profile_image = models.ImageField(upload_to = 'profile')
 
     def get_cart_count(self):
         return CartItems.objects.filter(cart__is_paid = False,cart__user = self.user).count()
